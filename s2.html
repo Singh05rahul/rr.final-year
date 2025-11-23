@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Study Master App</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --bg:#020617;
+  --text:#e5f0ff;
+  --sidebar:#020617;
+  --card:#020617;
+  --input:#02091e;
+  --accent:#22d3ee;
+  --accent-soft:#38bdf8;
+  --muted:#64748b;
+}
+body.light{
+  --bg:#e2f3ff;
+  --text:#020617;
+  --sidebar:#ffffff;
+  --card:#ffffff;
+  --input:#e2f3ff;
+  --accent:#0f9cf5;
+  --accent-soft:#2563eb;
+  --muted:#64748b;
+}
+*{
+  margin:0; padding:0; box-sizing:border-box;
+  font-family:'Poppins', sans-serif;
+}
+body{
+  background:radial-gradient(circle at top,#0f172a 0,#020617 55%,#000 100%);
+  color:var(--text);
+  height:100vh; display:flex;
+}
+.sidebar{
+  width:250px; background:linear-gradient(180deg,rgba(15,23,42,0.9),rgba(15,23,42,0.6)); padding:20px;
+  display:flex; flex-direction:column; gap:15px;
+  box-shadow:0 0 25px rgba(15,23,42,0.9);
+  border-right:1px solid rgba(148,163,184,0.3);
+}
+.sidebar h2{font-size:22px; margin-bottom:4px;}
+.sidebar small{color:var(--muted); font-size:12px;}
+.sidebar button{
+  padding:10px 12px; border:none; border-radius:999px;
+  background:rgba(15,23,42,0.9);
+  color:#e5f0ff; text-align:left; cursor:pointer; transition:0.25s;
+  display:flex; align-items:center; gap:8px; font-size:14px;
+  box-shadow:0 0 0 rgba(56,189,248,0);
+}
+body.light .sidebar{background:#ffffff;box-shadow:0 0 12px rgba(148,163,184,0.5);} 
+body.light .sidebar button{background:#e2f3ff; color:#020617;}
+.sidebar button:hover{ background:#020617; transform:translateX(4px); box-shadow:0 0 12px rgba(56,189,248,0.4); }
+body.light .sidebar button:hover{background:#dbeafe;}
+.sidebar button.active{ background:radial-gradient(circle at top,#22d3ee,#0ea5e9 45%,#1d4ed8 100%); box-shadow:0 0 18px rgba(56,189,248,0.9); }
+
+.main{
+  flex:1; padding:18px 24px; overflow:auto; display:flex; flex-direction:column; gap:16px;
+}
+.topbar{
+  display:flex; justify-content:space-between; align-items:center; gap:10px;
+}
+.app-title{font-size:20px; font-weight:600;}
+.topbar small{color:var(--muted); font-size:12px;}
+.top-right{display:flex; align-items:center; gap:10px;}
+.badge{
+  padding:6px 10px; border-radius:999px; background:rgba(15,23,42,0.85);
+  font-size:12px; color:var(--muted);
+  border:1px solid rgba(148,163,184,0.4);
+}
+body.light .badge{background:rgba(255,255,255,0.9);} 
+.theme-btn{
+  border:none; border-radius:999px; padding:8px 12px; cursor:pointer;
+  background:radial-gradient(circle at top,#0f172a,#020617 60%);
+  color:var(--text); font-size:14px;
+  box-shadow:0 0 12px rgba(15,23,42,0.8);
+}
+.theme-btn:hover{background:radial-gradient(circle at top,#22d3ee,#0ea5e9); box-shadow:0 0 16px rgba(34,211,238,0.7);}
+
+.theme-select{
+  padding:6px 10px; border-radius:999px; border:1px solid rgba(148,163,184,0.6);
+  background:rgba(15,23,42,0.9); color:var(--text); font-size:12px;
+}
+body.light .theme-select{background:#e2f3ff;color:#020617;}
+
+.content{margin-top:4px;}
+.section-title{ font-size:22px; font-weight:600; margin-bottom:16px; }
+.card{
+  background:radial-gradient(circle at top left,rgba(15,23,42,0.95),rgba(15,23,42,0.8)); padding:18px; border-radius:18px;
+  box-shadow:0 18px 40px rgba(15,23,42,0.9);
+  margin-bottom:16px;
+  border:1px solid rgba(148,163,184,0.35);
+}
+body.light .card{background:#ffffff;box-shadow:0 8px 18px rgba(148,163,184,0.6);} 
+input, textarea, select{
+  width:100%; padding:10px 12px; border-radius:10px; border:1px solid rgba(51,65,85,0.8);
+  background:rgba(15,23,42,0.9); color:var(--text); margin-top:10px; font-size:14px;
+}
+body.light input,body.light textarea,body.light select{background:#e2f3ff;border-color:#bfdbfe;color:#020617;} 
+textarea{min-height:120px; resize:vertical;}
+button.save{
+  background:linear-gradient(90deg,#22d3ee,#0ea5e9,#4f46e5); padding:10px 16px; border:none;
+  margin-top:12px; border-radius:999px; cursor:pointer; font-size:14px;
+  color:#020617; transition:0.25s; font-weight:600;
+  box-shadow:0 0 16px rgba(56,189,248,0.7);
+}
+button.save:hover{ background:linear-gradient(120deg,#67e8f9,#38bdf8,#6366f1); transform:translateY(-1px); box-shadow:0 0 22px rgba(56,189,248,0.9);} 
+.gallery-grid{
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(120px,1fr)); gap:12px;
+}
+.gallery-grid img{
+  width:100%; height:120px; object-fit:cover; border-radius:14px;
+  cursor:pointer; transition:0.3s; box-shadow:0 10px 24px rgba(15,23,42,0.95);
+  border:1px solid rgba(56,189,248,0.4);
+}
+.gallery-grid img:hover{ transform:scale(1.08) translateY(-4px); box-shadow:0 16px 40px rgba(56,189,248,0.9); }
+#timerDisplay{ font-size:36px; text-align:center; margin:8px 0 10px; letter-spacing:2px; }
+.timer-buttons button{
+  padding:10px 16px; border:none; border-radius:999px; cursor:pointer; margin:6px 8px 0 0;
+  font-size:13px; font-weight:500; color:#020617;
+}
+.timer-buttons .primary{background:#22c55e;}
+.timer-buttons .warn{background:#f97316;}
+.timer-buttons .muted{background:#1e293b;color:#e5f0ff;}
+.timer-buttons .short{background:#0ea5e9;}
+.timer-buttons .long{background:#6366f1;}
+
+#hourglassIcon{
+  font-size:44px; text-align:center; margin-bottom:4px;
+  text-shadow:0 0 16px rgba(56,189,248,0.9);
+}
+
+.dash-grid{display:flex; flex-direction:column; gap:10px;}
+.dash-row{margin-bottom:4px;}
+.dash-head{display:flex; justify-content:space-between; font-size:13px; color:var(--muted);}
+.dash-bar{width:100%; height:8px; border-radius:999px; background:rgba(15,23,42,0.9); overflow:hidden; margin-top:4px;}
+.dash-fill{height:100%; border-radius:999px; background:linear-gradient(90deg,#22d3ee,#0ea5e9,#6366f1);}
+
+@media(max-width:800px){
+  body{flex-direction:column;}
+  .sidebar{width:100%; flex-direction:row; overflow:auto; align-items:center;}
+  .sidebar h2, .sidebar small{display:none;}
+  .sidebar button{flex:1; justify-content:center;}
+}
+</style>
+</head>
+<body>
+<div class="sidebar">
+  <div>
+    <h2>🎮 Study App</h2>
+    <small>Focus • Notes • Time</small>
+  </div>
+  <button class="active" data-screen="subjects">📘 Subjects</button>
+  <button data-screen="notes">📝 Notes</button>
+  <button data-screen="gallery">📷 Photos</button>
+  <button data-screen="timer">⏱ Timer</button>
+  <button data-screen="dashboard">📊 Dashboard</button>
+</div>
+
+<div class="main">
+  <div class="topbar">
+    <div>
+      <div class="app-title">Study Master</div>
+      <small>Gaming style focus app — neon vibes ⚡</small>
+    </div>
+    <div class="top-right">
+      <select id="colorTheme" class="theme-select">
+        <option value="neon-blue">Neon Blue</option>
+        <option value="neon-purple">Neon Purple</option>
+        <option value="neon-green">Neon Green</option>
+        <option value="neon-red">Neon Red</option>
+      </select>
+      <div class="badge" id="streakBadge">🔥 0-day streak</div>
+      <div class="badge" id="totalHoursBadge">⏱ 0h total</div>
+      <button class="theme-btn" id="themeBtn" type="button">🌙</button>
+    </div>
+  </div>
+  <div class="content" id="contentArea"></div>
+</div>
+
+<script>
+// storage keys
+const SUBJECT_KEY = 'subjects';
+const NOTES_KEY = 'notes';
+const PHOTOS_KEY = 'photos';
+const TIME_KEY = 'studyTime';
+const LOG_KEY = 'studyLog_v1';
+const THEME_KEY = 'studyTheme_v1';
+const COLOR_THEME_KEY = 'studyColorTheme_v1';
+
+let subjects = JSON.parse(localStorage.getItem(SUBJECT_KEY) || '[]');
+let notes = JSON.parse(localStorage.getItem(NOTES_KEY) || '[]');
+let photos = JSON.parse(localStorage.getItem(PHOTOS_KEY) || '[]');
+let studyTime = JSON.parse(localStorage.getItem(TIME_KEY) || '{}');
+let studyLog = JSON.parse(localStorage.getItem(LOG_KEY) || '[]');
+let currentSubject = null;
+let currentScreen = 'subjects';
+
+// DOM refs
+const contentArea = document.getElementById('contentArea');
+const streakBadge = document.getElementById('streakBadge');
+const totalHoursBadge = document.getElementById('totalHoursBadge');
+const themeBtn = document.getElementById('themeBtn');
+const colorThemeSelect = document.getElementById('colorTheme');
+
+let theme = localStorage.getItem(THEME_KEY) || 'dark';
+let colorTheme = localStorage.getItem(COLOR_THEME_KEY) || 'neon-blue';
+
+// different color palettes
+const COLOR_THEMES = {
+  'neon-blue': {
+    '--bg':'#020617', '--text':'#e5f0ff', '--sidebar':'#020617', '--card':'#020617', '--input':'#02091e', '--accent':'#22d3ee', '--accent-soft':'#38bdf8', '--muted':'#64748b'
+  },
+  'neon-purple': {
+    '--bg':'#13011f', '--text':'#f5e9ff', '--sidebar':'#13011f', '--card':'#19052b', '--input':'#1e0b33', '--accent':'#a855f7', '--accent-soft':'#c084fc', '--muted':'#a78bfa'
+  },
+  'neon-green': {
+    '--bg':'#00120b', '--text':'#eafff5', '--sidebar':'#00120b', '--card':'#001f12', '--input':'#00251a', '--accent':'#22c55e', '--accent-soft':'#4ade80', '--muted':'#6ee7b7'
+  },
+  'neon-red': {
+    '--bg':'#190204', '--text':'#ffe5e9', '--sidebar':'#190204', '--card':'#240509', '--input':'#2a080c', '--accent':'#fb7185', '--accent-soft':'#f97373', '--muted':'#fecaca'
+  }
+};
+
+function saveAll(){
+  localStorage.setItem(SUBJECT_KEY, JSON.stringify(subjects));
+  localStorage.setItem(NOTES_KEY, JSON.stringify(notes));
+  localStorage.setItem(PHOTOS_KEY, JSON.stringify(photos));
+  localStorage.setItem(TIME_KEY, JSON.stringify(studyTime));
+  localStorage.setItem(LOG_KEY, JSON.stringify(studyLog));
+}
+
+function applyTheme(){
+  if(theme === 'light'){
+    document.body.classList.add('light');
+  } else {
+    document.body.classList.remove('light');
+  }
+  if(themeBtn){ themeBtn.textContent = theme === 'light' ? '🌙' : '☀️'; }
+}
+
+function applyColorTheme(){
+  const palette = COLOR_THEMES[colorTheme] || COLOR_THEMES['neon-blue'];
+  Object.entries(palette).forEach(([key,val])=>{
+    document.documentElement.style.setProperty(key,val);
+  });
+  if(colorThemeSelect){ colorThemeSelect.value = colorTheme; }
+}
+
+function toggleTheme(){
+  theme = theme === 'light' ? 'dark' : 'light';
+  localStorage.setItem(THEME_KEY, theme);
+  applyTheme();
+}
+
+if(themeBtn){ themeBtn.addEventListener('click', toggleTheme); }
+
+if(colorThemeSelect){
+  colorThemeSelect.addEventListener('change', (e)=>{
+    colorTheme = e.target.value;
+    localStorage.setItem(COLOR_THEME_KEY, colorTheme);
+    applyColorTheme();
+  });
+}
+
+// NAV
+Array.from(document.querySelectorAll('.sidebar button[data-screen]')).forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    Array.from(document.querySelectorAll('.sidebar button[data-screen]')).forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    const scr = btn.getAttribute('data-screen');
+    currentScreen = scr;
+    if(scr==='subjects') renderSubjects();
+    if(scr==='notes') renderNotes();
+    if(scr==='gallery') renderGallery();
+    if(scr==='timer') renderTimer();
+    if(scr==='dashboard') renderDashboard();
+  });
+});
+
+function renderSubjects(){
+  contentArea.innerHTML = `
+    <div class='section-title'>Subjects</div>
+    <div class='card'>
+      <label>New Subject</label>
+      <input id='subName' placeholder='e.g. DSA, .NET, Maths' />
+      <button class='save' onclick='addSubject()'>Add Subject</button>
+    </div>
+    <div id='subList'></div>
+  `;
+  const list = document.getElementById('subList');
+  if(subjects.length === 0){
+    list.innerHTML = `<div class="card" style="color:var(--muted)">Abhi koi subject nahi hai. Pehle subject add karo.</div>`;
+  } else {
+    list.innerHTML = subjects.map(s=>{
+      const sec = studyTime[s] || 0;
+      const hours = (sec/3600).toFixed(1);
+      return `
+        <div class='card' style='cursor:pointer' onclick="openSubject('${s.replace(/'/g,"&#39;")}')">
+          <strong>${s}</strong>
+          <div style='font-size:12px; color:var(--muted); margin-top:4px;'>Total time: ${hours} h</div>
+        </div>
+      `;
+    }).join('');
+  }
+}
+
+function addSubject(){
+  let input = document.getElementById('subName');
+  let name = (input.value || '').trim();
+  if(!name) return;
+  if(subjects.includes(name)) { alert('Ye subject pehle se exist karta hai'); return; }
+  subjects.push(name);
+  studyTime[name] = studyTime[name] || 0;
+  saveAll();
+  input.value='';
+  renderSubjects();
+  updateHeaderStats();
+}
+
+function openSubject(sub){
+  currentSubject = sub;
+  currentScreen = 'notes';
+  document.querySelector(".sidebar button[data-screen='notes']").click();
+}
+
+function renderNotes(){
+  if(!currentSubject){ contentArea.innerHTML = '<div class="card">Pehle koi subject select karo.</div>'; return; }
+  const filtered = notes.filter(n => n.sub === currentSubject);
+  contentArea.innerHTML = `
+    <div class='section-title'>Notes (${currentSubject})</div>
+    <div class='card'>
+      <label>Note title</label>
+      <input id='noteTitle' placeholder='Heading / Topic' />
+      <label style='margin-top:8px; display:block;'>Detail</label>
+      <textarea id='noteBody' placeholder='Yaha pura note likho...'></textarea>
+      <button class='save' onclick='addNote()'>Save Note</button>
+      <button class='save' style='background:#020617;color:#e5f0ff;margin-left:8px;box-shadow:none;border:1px solid rgba(148,163,184,0.5);' onclick='exportNotes()'>Print / Save as PDF</button>
+    </div>
+    <div id='noteList'></div>
+  `;
+  const list = document.getElementById('noteList');
+  if(filtered.length === 0){
+    list.innerHTML = `<div class="card" style="color:var(--muted)">Abhi koi note nahi hai. Upar se ek note save karo.</div>`;
+  } else {
+    list.innerHTML = filtered.map(n=>`
+      <div class='card'> <h3>${n.title || 'Untitled'}</h3> <p style='margin-top:6px; white-space:pre-wrap;'>${n.body}</p> </div>
+    `).join('');
+  }
+}
+
+function addNote(){
+  const titleEl = document.getElementById('noteTitle');
+  const bodyEl = document.getElementById('noteBody');
+  const title = (titleEl.value || '').trim();
+  const body = (bodyEl.value || '').trim();
+  if(!body){ alert('Note khaali nahi ho sakta'); return; }
+  notes.push({
+    sub: currentSubject,
+    title: title,
+    body: body
+  });
+  saveAll();
+  titleEl.value='';
+  bodyEl.value='';
+  renderNotes();
+}
+
+function exportNotes(){
+  const filtered = notes.filter(n=>n.sub===currentSubject);
+  if(filtered.length===0){ alert('Is subject ke koi notes nahi hai.'); return; }
+  let win = window.open('', '_blank');
+  let html = `<!DOCTYPE html><html><head><meta charset='utf-8'><title>${currentSubject} - Notes</title></head><body>`;
+  html += `<h1>${currentSubject} - Notes</h1>`;
+  filtered.forEach(n=>{
+    html += `<h2>${(n.title||'Untitled')}</h2>`;
+    html += `<pre>${(n.body||'')}</pre><hr/>`;
+  });
+  html += `<script>window.print();<\/script></body></html>`;
+  win.document.write(html);
+  win.document.close();
+}
+
+function renderGallery(){
+  if(!currentSubject){ contentArea.innerHTML = '<div class="card">Pehle subject select karo.</div>'; return; }
+  const filtered = photos.filter(p => p.sub === currentSubject);
+  contentArea.innerHTML = `
+    <div class='section-title'>Photos (${currentSubject})</div>
+    <div class='card'>
+      <label>Note images (Camera/Gallery)</label>
+      <input type='file' id='imgInput' accept='image/*' capture='environment' />
+      <button class='save' onclick='addPhoto()'>Add Photo</button>
+      <small style='display:block; margin-top:8px; color:var(--muted); font-size:12px;'>Mobile par ye camera open karega (ya camera + gallery ka option dikhayega).</small>
+    </div>
+    <div class='gallery-grid' id='galleryList'></div>
+  `;
+  const list = document.getElementById('galleryList');
+  if(filtered.length===0){
+    list.innerHTML = `<div style="color:var(--muted);">Abhi koi photo nahi hai.</div>`;
+  } else {
+    list.innerHTML  = filtered.map(p=>`
+      <img src='${p.url}' />
+    `).join('');
+  }
+}
+
+function addPhoto(){
+  let input = document.getElementById('imgInput');
+  let f = input.files[0];
+  if(!f){ alert('Pehle koi image/camera capture select karo.'); return; }
+  let url = URL.createObjectURL(f);
+  photos.push({ sub:currentSubject, url });
+  saveAll();
+  renderGallery();
+}
+
+// TIMER + STUDY TIME (Pomodoro + rait wali ghadi)
+let timerInterval = null;
+let sessionMode = 'idle'; // 'study' | 'short' | 'long' | 'idle'
+let sessionTarget = 0; // seconds planned
+let sessionElapsed = 0; // seconds elapsed
+
+function renderTimer(){
+  if(!currentSubject){ contentArea.innerHTML = '<div class="card">Pehle subject select karo.</div>'; return; }
+  const totalSec = studyTime[currentSubject] || 0;
+  const hrs = (totalSec/3600).toFixed(1);
+  contentArea.innerHTML = `
+    <div class='section-title'>Study Timer (${currentSubject})</div>
+    <div class='card'>
+      <div id='hourglassIcon'>⏳</div>
+      <div id='timerDisplay'>00:25:00</div>
+      <div class='timer-buttons'>
+        <button class='primary' onclick='startStudy()'>Start Study (25m)</button>
+        <button class='short' onclick='startShortBreak()'>Short Break (5m)</button>
+        <button class='long' onclick='startLongBreak()'>Long Break (15m)</button>
+        <button class='warn' onclick='stopTimer()'>Stop</button>
+        <button class='muted' onclick='resetTimer()'>Reset</button>
+      </div>
+      <div style='margin-top:14px; font-size:14px; color:var(--muted);'>Total recorded study time: <strong>${hrs} h</strong></div>
+    </div>
+  `;
+}
+
+function updateTimerDisplay(){
+  const disp = document.getElementById('timerDisplay');
+  const hg = document.getElementById('hourglassIcon');
+  if(!disp) return;
+  const remaining = Math.max(sessionTarget - sessionElapsed, 0);
+  const h = Math.floor(remaining/3600);
+  const m = Math.floor((remaining%3600)/60);
+  const s = remaining%60;
+  disp.textContent = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  if(hg){
+    if(sessionMode === 'study') hg.textContent = '⏳';
+    else if(sessionMode === 'short') hg.textContent = '☕';
+    else if(sessionMode === 'long') hg.textContent = '🍵';
+    else hg.textContent = '⏳';
+  }
+}
+
+function startSession(mode, minutes){
+  if(!currentSubject){ alert('Pehle subject select karo.'); return; }
+  if(timerInterval){ clearInterval(timerInterval); }
+  sessionMode = mode;
+  sessionTarget = minutes*60;
+  sessionElapsed = 0;
+  updateTimerDisplay();
+  timerInterval = setInterval(()=>{
+    sessionElapsed++;
+    updateTimerDisplay();
+    if(sessionElapsed >= sessionTarget){
+      clearInterval(timerInterval);
+      timerInterval = null;
+      finishSession(true);
+      alert('Time up!');
+    }
+  },1000);
+}
+
+function startStudy(){ startSession('study',25); }
+function startShortBreak(){ startSession('short',5); }
+function startLongBreak(){ startSession('long',15); }
+
+function stopTimer(){
+  if(!timerInterval){ return; }
+  clearInterval(timerInterval);
+  timerInterval = null;
+  finishSession(false);
+}
+
+function resetTimer(){
+  if(timerInterval){ clearInterval(timerInterval); }
+  timerInterval = null;
+  sessionMode = 'idle';
+  sessionTarget = 25*60;
+  sessionElapsed = 0;
+  const disp = document.getElementById('timerDisplay');
+  if(disp) disp.textContent = '00:25:00';
+  const hg = document.getElementById('hourglassIcon');
+  if(hg) hg.textContent = '⏳';
+}
+
+function finishSession(autoEnded){
+  if(sessionMode === 'study' && sessionElapsed>0 && currentSubject){
+    studyTime[currentSubject] = (studyTime[currentSubject] || 0) + sessionElapsed;
+    const today = new Date();
+    const dayStr = today.toISOString().slice(0,10);
+    if(!studyLog.includes(dayStr)) studyLog.push(dayStr);
+    saveAll();
+    updateHeaderStats();
+  }
+  sessionMode = 'idle';
+  sessionTarget = 25*60;
+  sessionElapsed = 0;
+  updateTimerDisplay();
+}
+
+// DASHBOARD & STREAK
+function getStreak(){
+  if(!studyLog || studyLog.length===0) return 0;
+  const unique = Array.from(new Set(studyLog)).sort();
+  const today = new Date();
+  let streak = 0;
+  let current = new Date(today.toISOString().slice(0,10));
+  while(true){
+    const dStr = current.toISOString().slice(0,10);
+    if(unique.includes(dStr)){
+      streak++;
+      current.setDate(current.getDate()-1);
+    } else {
+      break;
+    }
+  }
+  return streak;
+}
+
+function updateHeaderStats(){
+  let totalSec = 0;
+  Object.values(studyTime || {}).forEach(v=> totalSec += (v||0));
+  const hrs = (totalSec/3600).toFixed(1);
+  if(totalHoursBadge) totalHoursBadge.textContent = `⏱ ${hrs}h total`;
+  const s = getStreak();
+  if(streakBadge) streakBadge.textContent = s>0 ? `🔥 ${s}-day streak` : '🔥 0-day streak';
+}
+
+function renderDashboard(){
+  let html = `<div class='section-title'>Dashboard</div>`;
+  if(subjects.length===0){
+    html += `<div class='card'>Pehle subjects add karo. Fir timer use karke padhai track karo.</div>`;
+  } else {
+    const entries = subjects.map(sub=>({ sub, sec:(studyTime[sub]||0) })).filter(e=>e.sec>0);
+    if(entries.length===0){
+      html += `<div class='card'>Abhi tak kisi subject ka study time record nahi hua. Timer se start karo.</div>`;
+    } else {
+      const max = Math.max(...entries.map(e=>e.sec));
+      html += `<div class='card'><div class='dash-grid'>`;
+      html += entries.map(e=>{
+        const h = e.sec/3600;
+        const pretty = h.toFixed(1);
+        const width = max ? (e.sec/max*100) : 0;
+        return `
+          <div class='dash-row'>
+            <div class='dash-head'>
+              <span>${e.sub}</span>
+              <span>${pretty} h</span>
+            </div>
+            <div class='dash-bar'><div class='dash-fill' style='width:${width}%;'></div></div>
+          </div>
+        `;
+      }).join('');
+      html += `</div></div>`;
+    }
+  }
+  contentArea.innerHTML = html;
+}
+
+// initial
+applyTheme();
+applyColorTheme();
+renderSubjects();
+updateHeaderStats();
+</script>
+</body>
+</html>
